@@ -98,3 +98,9 @@ touch tu_app/migrations/__init__.py
 python manage.py makemigrations tu_app
 python manage.py migrate --fake-initial
 ```
+### eliminar una rama e incluir una nueva
+```
+git remote -v
+git remote remove origin
+git remote add origin https://github.com/J2-Python/blogdb.git
+```
