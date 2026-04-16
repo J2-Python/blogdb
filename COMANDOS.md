@@ -39,7 +39,7 @@ python3 manage.py migrate
 ```
 python3 manage.py createsuperuser
 python3 manage.py changepassword "blogdbadmin"
-ususer blogdbadmin
+user blogdbadmin
 password admin123456
 ```
 

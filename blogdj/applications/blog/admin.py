@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category, Kword, Author, Blog
+from .models import Category, Kword, Author, Blog,Suscriptions
 
 
 @admin.register(Category)
@@ -37,3 +37,4 @@ class BlogAdmin(admin.ModelAdmin):
         'date',
         'id',
     )
+admin.site.register(Suscriptions)
