@@ -38,6 +38,9 @@ python3 manage.py migrate
 ### crear usuarios
 ```
 python3 manage.py createsuperuser
+python3 manage.py changepassword "blogdbadmin"
+ususer blogdbadmin
+password admin123456
 ```
 
 ### Actualizar version de DJANGO a la 5.2.12 compatible con la version de python 3.14.2
