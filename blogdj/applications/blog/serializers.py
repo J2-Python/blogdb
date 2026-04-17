@@ -19,7 +19,12 @@ class SuscriberSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
     def create(self, validated_data):
-        return Suscriptions.objects.create(**validated_data)
+        #! validated_data = { 'blog':'sdfsdfs','email':'juan@collantes.ec'} y es proporcionado por la clase Serializer
+        #return Suscriptions.objects.create(**validated_data)
+        blog=Blog.objects.get(id=validated_data['blog'])
+        email=Blog.objects.get(email=validated_data['email'])
+        return Suscriptions.objects.create(blog=blog,email=email)
+        
 
 
 class SeedBlogDataSerializer(serializers.Serializer):
