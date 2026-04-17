@@ -21,10 +21,18 @@ class SuscriberSerializer(serializers.Serializer):
     def create(self, validated_data):
         #! validated_data = { 'blog':'sdfsdfs','email':'juan@collantes.ec'} y es proporcionado por la clase Serializer
         #return Suscriptions.objects.create(**validated_data)
-        blog=Blog.objects.get(id=validated_data['blog'])
-        email=Blog.objects.get(email=validated_data['email'])
+        print("****desde el serializer****")
+        print(validated_data['blog'])
+        #! por como esta definido el field blog como PrimaryKeyRelatedField al leer validated_data['blog'] ya devuelve una instancia de Blog 
+        blog=validated_data['blog']
+        #blog=Blog.objects.get(id=validated_data['blog'])
+        print(validated_data['email'])
+        email=validated_data['email']
         return Suscriptions.objects.create(blog=blog,email=email)
-        
+    def update(self,instance,validated_data):
+        instance.email=validated_data.get('email',instance.email)
+        instance.save()
+        return instance
 
 
 class SeedBlogDataSerializer(serializers.Serializer):

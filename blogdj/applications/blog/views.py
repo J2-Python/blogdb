@@ -23,12 +23,26 @@ class RegistrarSuscripcion(CreateAPIView):
 
 
 class AgregarSuscripcion(CreateAPIView):
+    
     serializer_class = SuscriberSerializer
     queryset = Suscriptions.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        print('***desde la vista****')
+        #print(serializer.data) da error
+        print(serializer.validated_data['email'])
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
 
 
 class SeedBlogDataView(APIView):
     """Reset and recreate sample data for the educational blog project."""
+
     #! se crea asigna el serializer a la clase pero como se esta usando una APIView el serializer que realmente se usa para validar el input de datos es el serializer que esta en el metodo post.
     serializer_class = SeedBlogDataSerializer
 

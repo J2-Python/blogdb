@@ -91,7 +91,7 @@ class Blog(models.Model):
         verbose_name_plural = "blogs"
 
     def __str__(self):
-        return self.title
+        return f"Titulo: {self.title}"
 
 
 class Suscriptions(models.Model):
