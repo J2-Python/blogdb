@@ -46,6 +46,6 @@ urlpatterns = [
     path(
         "api/category/detail/<pk>/",
         CategoryDetail.as_view(),
-        name="lista_categorias",
+        name="category-detail",
     ),
 ]

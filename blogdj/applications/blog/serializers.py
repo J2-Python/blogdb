@@ -12,7 +12,7 @@ from .models import Suscriptions
 class SuscriberModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Suscriptions
-        fields = "__all__"
+        fields = ("__all__",)
 
 
 class SuscriberSerializer(serializers.Serializer):
@@ -84,20 +84,30 @@ class AuthorSerializer(serializers.ModelSerializer):
 class KwordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Kword
-        fields = "__all__"
+        fields = ("__all__",)
 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = "__all__"
+        fields = ("__all__",)
+
+
+class CategoryHiperLinkSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Category
+        fields = ("url",)
+        extra_kwargs = {
+            "url": {"view_name": "blog_app:category-detail", "lookup_field": "pk"}
+        }
 
 
 class BlogDetailSerializer(serializers.ModelSerializer):
     # con esto le decimos a este serializador que cuando muestre el campo relacionado author y kwords muestre la informacion que esta configurada en el serializer AuthorSerializer, KwordSerializer y CategorySerializer. esto se usa para campos FK y para campos ManyToMany
     author = AuthorSerializer()
     kwords = KwordSerializer(many=True)
-    categorys = CategorySerializer(many=True)
+    # categorys = CategorySerializer(many=True)
+    categorys = CategoryHiperLinkSerializer(many=True)
 
     class Meta:
         model = Blog
@@ -112,9 +122,3 @@ class BlogDetailSerializer(serializers.ModelSerializer):
             "content",
             "date",
         )
-
-
-class CategoryHiperLinkSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Category
-        fields = "__all__"
