@@ -1,25 +1,51 @@
 from django.urls import path
 
-from .views import AgregarSuscripcion
+from .views import AgregarSuscripcion, BlogDetail, CategoryDetail, CrearSuscripcion, ListaAutores, ListaCategorias
 from .views import RegistrarSuscripcion
 from .views import SeedBlogDataView
+
 
 app_name = "blog_app"
 
 urlpatterns = [
     path(
-        "api/suscriptions/register",
+        "api/suscriptions/register/",
         RegistrarSuscripcion.as_view(),
         name="register-suscription",
     ),
     path(
-        "api/suscriptions/add",
+        "api/suscriptions/add/",
         AgregarSuscripcion.as_view(),
         name="add-suscription",
     ),
     path(
-        "api/seed/basic",
+        "api/seed/basic/",
         SeedBlogDataView.as_view(),
         name="seed-basic",
+    ),
+    path(
+        "api/suscriptions/create/",
+        CrearSuscripcion.as_view(),
+        name="add-suscription",
+    ),
+    path(
+        "api/blog/detail/<pk>",
+        BlogDetail.as_view(),
+        name="blog_detail",
+    ),
+    path(
+        "api/blog/list/",
+        ListaAutores.as_view(),
+        name="lista_autores",
+    ),
+    path(
+        "api/category/list/",
+        ListaCategorias.as_view(),
+        name="lista_categorias",
+    ),
+    path(
+        "api/category/detail/<pk>/",
+        CategoryDetail.as_view(),
+        name="lista_categorias",
     ),
 ]

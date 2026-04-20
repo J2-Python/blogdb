@@ -6,12 +6,12 @@ from typing import cast
 from django.conf import settings
 from rest_framework import status
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Suscriptions
-from .serializers import SeedBlogDataSerializer
+from .models import Author, Suscriptions,Blog,Category
+from .serializers import AuthorSerializer, BlogDetailSerializer, CategoryHiperLinkSerializer, SeedBlogDataSerializer, SuscriptionSerializer,CategorySerializer
 from .serializers import SuscriberModelSerializer
 from .serializers import SuscriberSerializer
 from .services import reset_blog_sample_data
@@ -73,3 +73,33 @@ class SeedBlogDataView(APIView):
             },
             status=status.HTTP_201_CREATED,
         )
+
+class CrearSuscripcion(APIView):
+    def post(self,request):
+        serializer=SuscriptionSerializer(data=request.data)
+        if serializer.is_valid():
+            print("Guardar data")
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        else:
+            print("Error serializador")
+            print(serializer.errors)
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+        
+class BlogDetail(RetrieveAPIView):
+    lookup_field='pk'
+    serializer_class=BlogDetailSerializer
+    queryset=Blog.objects.all()
+
+class ListaAutores(ListAPIView):
+    serializer_class=AuthorSerializer
+    queryset=Author.objects.all()
+    
+class ListaCategorias(ListAPIView):
+    #serializer_class=CategorySerializer
+    serializer_class=CategoryHiperLinkSerializer
+    queryset=Category.objects.all()
+
+class CategoryDetail(RetrieveAPIView):
+    lookup_field='pz'
+    serializer_class=CategorySerializer
+    queryset=Category.objects.all

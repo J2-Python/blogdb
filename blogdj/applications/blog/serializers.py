@@ -1,8 +1,11 @@
 """Serializers for blog API endpoints."""
 
+from dataclasses import fields
+from wsgiref.validate import validator
+
 from rest_framework import serializers
 
-from .models import Blog
+from .models import Author, Blog, Category, Kword
 from .models import Suscriptions
 
 
@@ -20,22 +23,98 @@ class SuscriberSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         #! validated_data = { 'blog':'sdfsdfs','email':'juan@collantes.ec'} y es proporcionado por la clase Serializer
-        #return Suscriptions.objects.create(**validated_data)
+        # return Suscriptions.objects.create(**validated_data)
         print("****desde el serializer****")
-        print(validated_data['blog'])
-        #! por como esta definido el field blog como PrimaryKeyRelatedField al leer validated_data['blog'] ya devuelve una instancia de Blog 
-        blog=validated_data['blog']
-        #blog=Blog.objects.get(id=validated_data['blog'])
-        print(validated_data['email'])
-        email=validated_data['email']
-        return Suscriptions.objects.create(blog=blog,email=email)
-    def update(self,instance,validated_data):
-        instance.email=validated_data.get('email',instance.email)
+        print(validated_data["blog"])
+        #! por como esta definido el field blog como PrimaryKeyRelatedField al leer validated_data['blog'] ya devuelve una instancia de Blog
+        blog = validated_data["blog"]
+        # blog=Blog.objects.get(id=validated_data['blog'])
+        print(validated_data["email"])
+        email = validated_data["email"]
+        return Suscriptions.objects.create(blog=blog, email=email)
+
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get("email", instance.email)
         instance.save()
         return instance
 
 
 class SeedBlogDataSerializer(serializers.Serializer):
     """Validate the amount of sample blog data to recreate."""
+
     #! Este serializador valida que el valor recibido en count el minimo sea uno, el maximo 100 y su valor por defecto en caso de que no se envie sea de 20.
     count = serializers.IntegerField(min_value=1, max_value=100, default=20)
+
+
+#! Otra manera de validar es con funciones externas a las clases
+def validar_blog(value):
+    if not (Blog.objects.filter(id=value).exists()):
+        raise serializers.ValidationError("error en id blog")
+    return value
+
+
+class SuscriptionSerializer(serializers.Serializer):
+    blog = serializers.CharField(validators=[validar_blog])
+    email = serializers.EmailField()
+    # def validate(self,data):
+    #     blog_id=data["blog"]
+    #     if not (Blog.objects.filter(id=blog_id).exists()):
+    #         raise serializers.ValidationError(f"el blog con id {blog_id} no existe")
+
+
+class AuthorSerializer(serializers.ModelSerializer):
+    #! num_blogs y full_name sera un campo calculado con SerializerMethodField(). El nombre del metodo tiene que ser el profijo get_ y el nombre del campo.
+    num_blogs = serializers.SerializerMethodField()
+    full_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Author
+        # fields=('__all__')
+        fields = ("id", "full_name", "email", "num_blogs")
+
+    def get_num_blogs(self, obj):
+        print(obj.id)
+        blogs = Blog.objects.filter(author__id=obj.id).count()
+        return blogs
+
+    def get_full_name(self, obj):
+        return obj.full_name.upper()
+
+
+class KwordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Kword
+        fields = "__all__"
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = "__all__"
+
+
+class BlogDetailSerializer(serializers.ModelSerializer):
+    # con esto le decimos a este serializador que cuando muestre el campo relacionado author y kwords muestre la informacion que esta configurada en el serializer AuthorSerializer, KwordSerializer y CategorySerializer. esto se usa para campos FK y para campos ManyToMany
+    author = AuthorSerializer()
+    kwords = KwordSerializer(many=True)
+    categorys = CategorySerializer(many=True)
+
+    class Meta:
+        model = Blog
+        fields = (
+            "id",
+            "author",
+            "kwords",
+            "categorys",
+            "title",
+            "resume",
+            "image",
+            "content",
+            "date",
+        )
+
+
+class CategoryHiperLinkSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Category
+        fields = "__all__"
