@@ -1,3 +1,5 @@
+from hashlib import md5
+
 from django.db import models
 
 
@@ -82,9 +84,7 @@ class Blog(models.Model):
     resume = models.CharField("resumen", max_length=150)
     image = models.ImageField("portada", upload_to="blog_imgs", blank=True)
     content = models.TextField("contenido")
-    date = models.DateTimeField(
-        "Fecha-Hora",
-    )
+    date = models.DateTimeField("Fecha-Hora", auto_now=False, auto_now_add=False)
 
     class Meta:
         verbose_name = "blog"

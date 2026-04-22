@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import AgregarSuscripcion, BlogDetail, CategoryDetail, CrearSuscripcion, ListaAutores, ListaCategorias
+from .views import AgregarSuscripcion, BlogCreateView, BlogDetail, CategoryDetail, CrearSuscripcion, ListaAutores, ListaCategorias
 from .views import RegistrarSuscripcion
 from .views import SeedBlogDataView
 
@@ -32,6 +32,11 @@ urlpatterns = [
         "api/blog/detail/<pk>",
         BlogDetail.as_view(),
         name="blog_detail",
+    ),
+    path(
+        "api/blog/create/",
+        BlogCreateView.as_view(),
+        name="blog-create",
     ),
     path(
         "api/blog/list/",

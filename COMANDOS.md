@@ -107,3 +107,16 @@ git remote -v
 git remote remove origin
 git remote add origin https://github.com/J2-Python/blogdb.git
 ```
+
+### JSON para Creacion de Blog via metodo POST
+```
+{
+    "author": 2,
+    "kwords": [2,3],
+    "categorys": [2,3,4],
+    "title": "Primer Blog Via Ap",
+    "resume": "Resumen del blog",
+    "content": "Contenido completo del blog",
+    "date": "2026-04-22T18:30:00Z"
+}
+```
